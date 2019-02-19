@@ -27,7 +27,7 @@ const setRole = functions.https.onCall((data: any, context: any) => {
   };
 
   for (let id in rolesIdentifiers) {
-    if (id === request.roleId) {
+    if (rolesIdentifiers.hasOwnProperty(id)) {
       pushInDatabase(request.roleId);
       break;
     }
