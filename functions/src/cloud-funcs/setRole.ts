@@ -26,12 +26,11 @@ const setRole = functions.https.onCall((data: any, context: any) => {
       });
   };
 
-  for (let id in rolesIdentifiers) {
-    if (rolesIdentifiers.hasOwnProperty(id)) {
+  Object.keys(rolesIdentifiers).forEach(id => {
+    if (id === request.roleId) {
       pushInDatabase(request.roleId);
-      break;
     }
-  }
+  });
 });
 
 export default setRole;
