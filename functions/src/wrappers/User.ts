@@ -1,6 +1,6 @@
 export default class User {
-  roleId: any;
-  constructor(role: any) {
+  roleId: string;
+  constructor(role: string) {
     this.roleId = role;
   }
 }

@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 import collections from "../constants/collections";
 import User from "../wrappers/User";
 
+// access to the function have: only admin with ID 10M1axs9W6UNxmLesmN6
 const setRole = functions.https.onCall((data: any, context: any) => {
   const request = data.data;
   const userId = request.userId;
