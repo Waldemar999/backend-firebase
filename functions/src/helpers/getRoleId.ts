@@ -2,21 +2,21 @@ const admin = require("firebase-admin");
 
 import collections from "../constants/collections";
 
-const getRoleId = (requestAuthorId: string) => {
-  let roleId = null;
-  admin
+const getRoleId = (role: string): Promise<any> => {
+  return admin
     .firestore()
-    .collection(collections.users)
-    .doc(requestAuthorId)
+    .collection(collections.roles)
     .get()
-    .then((documentSnapshot: any) => {
-      roleId = documentSnapshot.get("roleId");
+    .then((querySnapshot: any) => {
+      querySnapshot.forEach((documentSnapshot: any) => {
+        if (documentSnapshot.get("name") === role) {
+          return documentSnapshot.get("id");
+        }
+      });
     })
-    .catch(() => {
-      console.log("Error getting roleID");
+    .catch((error: any) => {
+      console.error("Error getting document id", error);
     });
-
-  return roleId;
 };
 
 export default getRoleId;

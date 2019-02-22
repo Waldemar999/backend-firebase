@@ -3,7 +3,6 @@ const admin = require("firebase-admin");
 import collections from "../constants/collections";
 
 const isRoleExist = (roleId: string) => {
-  // let collectionRef = admin.firestore().collection(collections.roles);
   return new Promise((resolve, reject) => {
     admin
       .firestore()

@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 
-import collections from "../constants/collections";
-import User from "../wrappers/User";
+import collections from "../../constants/collections";
+import User from "../../wrappers/User";
 
 const writeUser = (role: string, user: string) => {
   return new Promise((resolve, reject) => {
@@ -9,7 +9,6 @@ const writeUser = (role: string, user: string) => {
       .firestore()
       .collection(collections.users)
       .doc(user)
-      // .set(new User(role))
       .set({ ...new User(role) })
       .then((docRef: any) => {
         resolve();
