@@ -21,4 +21,47 @@ const addItemInDb = (itemName: string, itemCount: number) => {
   });
 };
 
-export { addItemInDb };
+const changeItemInDb = (
+  itemId: string,
+  itemName: string | undefined,
+  itemCount: number | undefined
+) => {
+  const name = itemName ? itemName : null;
+  const count = itemCount ? itemCount : null;
+
+  if (name === null && count === null) {
+    return Promise.reject(
+      new functions.https.HttpsError(
+        "Error adding item in database, nothing to change"
+      )
+    );
+  }
+
+  const setObject = <any>{};
+  if (name) {
+    setObject.name = name;
+  }
+  if (count) {
+    setObject.count = count;
+  }
+
+  return new Promise((resolve, reject) => {
+    return admin
+      .firestore()
+      .collection(collections.items)
+      .doc(itemId)
+      .update(setObject)
+      .then(() => {
+        resolve();
+      })
+      .catch((error: any) => {
+        reject();
+        new functions.https.HttpsError(
+          "Error changing item in database",
+          error
+        );
+      });
+  });
+};
+
+export { addItemInDb, changeItemInDb };
