@@ -1,5 +1,7 @@
 const collections = {
-  users: "users/"
+  users: "users/",
+  roles: "roles/",
+  items: "items/"
 };
 
 export default collections;

@@ -1,3 +1,7 @@
 import setRole from "./cloud-funcs/setRole";
 
-exports.addRole = setRole;
+const admin = require("firebase-admin");
+
+admin.initializeApp();
+
+exports.setRole = setRole;
