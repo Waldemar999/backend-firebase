@@ -15,10 +15,8 @@ const setRole = functions.https.onCall((data: httpsRequest, context: any) => {
   const request = data.data;
   const userId = request.userId;
   const roleId = request.roleId;
-  // const ID = context.auth.uid;
-  const ID = "10M1axs9W6UNxmLesmN6";
 
-  return isAdmin(ID).then(() => {
+  return isAdmin(context.auth.uid).then(() => {
     isRoleExist(roleId).then(() => {
       writeUser(roleId, userId);
     });
