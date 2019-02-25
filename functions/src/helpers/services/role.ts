@@ -1,10 +1,7 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
-import collections from "../constants/collections";
-import roles from "../constants/roles";
-
-import User from "../wrappers/User";
+import collections from "../../constants/collections";
 
 const getRoleId = (role: string): Promise<any> => {
   return admin
@@ -26,11 +23,11 @@ const getRoleId = (role: string): Promise<any> => {
     });
 };
 
-const getUserRoleId = (requestAuthorId: string) => {
+const getUserRoleId = (authorId: string) => {
   return admin
     .firestore()
     .collection(collections.users)
-    .doc(requestAuthorId)
+    .doc(authorId)
     .get()
     .then((documentSnapshot: any) => {
       return documentSnapshot.get("roleId");
@@ -60,42 +57,4 @@ const isRoleExist = (roleId: string): Promise<any> => {
   });
 };
 
-const isAdmin = (requestAuthorId: string) => {
-  return Promise.all([getUserRoleId(requestAuthorId), getRoleId(roles.admin)])
-    .then(([userRoleId, adminRoleId]) => {
-      if (userRoleId === adminRoleId) {
-        return Promise.resolve();
-      } else {
-        return Promise.reject(
-          new functions.https.HttpsError(
-            "You are not allowed to change data in the database."
-          )
-        );
-      }
-    })
-    .catch((error: any) => {
-      new functions.https.HttpsError(error);
-    });
-};
-
-const writeUser = (role: string, user: string) => {
-  return new Promise((resolve, reject) => {
-    admin
-      .firestore()
-      .collection(collections.users)
-      .doc(user)
-      .set({ ...new User(role) })
-      .then(() => {
-        resolve();
-      })
-      .catch((error: any) => {
-        reject();
-        new functions.https.HttpsError(
-          "Error: add user role in database",
-          error
-        );
-      });
-  });
-};
-
-export { isRoleExist, writeUser, isAdmin, getUserRoleId, getRoleId };
+export { isRoleExist, getUserRoleId, getRoleId };
