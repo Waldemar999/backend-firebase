@@ -1,8 +1,6 @@
 const functions = require("firebase-functions");
 
-import isAdmin from "../helpers/role/isAdmin";
-import isRoleExist from "../helpers/role/isRoleExist";
-import writeUser from "../helpers/user/writeUser";
+import { isAdmin, isRoleExist, writeUser } from "../helpers/role";
 
 interface httpsRequest {
   data: {
