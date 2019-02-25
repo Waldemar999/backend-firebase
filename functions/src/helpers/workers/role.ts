@@ -22,4 +22,26 @@ const isAdmin = (requestAuthorId: string) => {
     });
 };
 
-export { isAdmin };
+const isManager = (requestAuthorId: string) => {
+  return Promise.all([
+    getUserRoleId(requestAuthorId),
+    getRoleId(roles.manager),
+    getRoleId(roles.admin)
+  ])
+    .then(([userRoleId, managerRoleId, adminRoleId]) => {
+      if (userRoleId === managerRoleId || userRoleId === adminRoleId) {
+        return Promise.resolve();
+      } else {
+        return Promise.reject(
+          new functions.https.HttpsError(
+            "You are not allowed to change data in the database."
+          )
+        );
+      }
+    })
+    .catch((error: any) => {
+      new functions.https.HttpsError(error);
+    });
+};
+
+export { isAdmin, isManager };
