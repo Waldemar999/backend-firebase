@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
+const functions = require("firebase-functions");
 
-import collections from "../constants/collections";
+import collections from "../../constants/collections";
 
 const getRoleId = (role: string): Promise<any> => {
   return admin
@@ -15,7 +16,10 @@ const getRoleId = (role: string): Promise<any> => {
       });
     })
     .catch((error: any) => {
-      console.error("Error getting document id", error);
+      new functions.https.HttpsError(
+        "Error getting role ID from database",
+        error
+      );
     });
 };
 

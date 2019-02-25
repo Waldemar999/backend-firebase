@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
+const functions = require("firebase-functions");
 
-import collections from "../constants/collections";
+import collections from "../../constants/collections";
 
 const getUserRoleId = (requestAuthorId: string) => {
   return admin
@@ -11,8 +12,8 @@ const getUserRoleId = (requestAuthorId: string) => {
     .then((documentSnapshot: any) => {
       return documentSnapshot.get("roleId");
     })
-    .catch(() => {
-      console.log("Error getting roleID");
+    .catch((error: any) => {
+      new functions.https.HttpsError("Error getting user role ID", error);
     });
 };
 

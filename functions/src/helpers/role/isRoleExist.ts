@@ -1,8 +1,9 @@
 const admin = require("firebase-admin");
+const functions = require("firebase-functions");
 
-import collections from "../constants/collections";
+import collections from "../../constants/collections";
 
-const isRoleExist = (roleId: string) => {
+const isRoleExist = (roleId: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     admin
       .firestore()
@@ -16,8 +17,8 @@ const isRoleExist = (roleId: string) => {
           reject();
         }
       })
-      .catch(() => {
-        console.error("Role is not exist");
+      .catch((error: any) => {
+        new functions.https.HttpsError("Error: role is not exist", error);
       });
   });
 };
