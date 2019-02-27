@@ -45,14 +45,13 @@ const isRoleExist = async (roleId: string): Promise<any> => {
       .collection(collections.roles)
       .doc(roleId)
       .get();
-    if (result.exists) {
-      return Promise.resolve();
-    } else {
+    if (!result.exists) {
       throw new functions.https.HttpsError("Error: role is not exist");
     }
   } catch (error) {
-    return Promise.reject(error.message);
+    result = Promise.reject();
   }
+  return result;
 };
 
 export { isRoleExist, getUserRoleId, getRoleId };

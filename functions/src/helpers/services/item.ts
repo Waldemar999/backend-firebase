@@ -15,7 +15,6 @@ const addItemInDb = async (
       .collection(collections.items)
       .doc()
       .set({ ...Item.createFull(itemName, itemCount) });
-    result = Promise.resolve();
   } catch (error) {
     result = Promise.reject();
     new functions.https.HttpsError("Error adding item in database", error);
@@ -55,6 +54,7 @@ const changeItemInDb = async (
       .doc(itemId)
       .update(updateObj);
   } catch (error) {
+    result = Promise.reject();
     new functions.https.HttpsError("Error changing item in database", error);
   }
   return result;
