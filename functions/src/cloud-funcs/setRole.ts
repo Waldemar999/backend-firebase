@@ -11,16 +11,18 @@ interface httpsRequest {
   };
 }
 // access to the function have: only admin with ID 10M1axs9W6UNxmLesmN6
-const setRole = functions.https.onCall((data: httpsRequest, context: any) => {
-  const request = data.data;
-  const userId = request.userId;
-  const roleId = request.roleId;
+const setRole = functions.https.onCall(
+  (data: httpsRequest, context: any): Promise<any> => {
+    const request = data.data;
+    const userId = request.userId;
+    const roleId = request.roleId;
 
-  return isAdmin(context.auth.uid).then(() => {
-    isRoleExist(roleId).then(() => {
-      writeUser(roleId, userId);
+    return isAdmin("10M1axs9W6UNxmLesmN6").then(() => {
+      isRoleExist(roleId).then(() => {
+        writeUser(userId, roleId);
+      });
     });
-  });
-});
+  }
+);
 
 export default setRole;

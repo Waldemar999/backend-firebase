@@ -10,14 +10,17 @@ interface httpsRequest {
   };
 }
 // access to the function have: admin with ID 10M1axs9W6UNxmLesmN6 and manager with ID fwOxMZlkAbuP9rwI4We2
-const addItem = functions.https.onCall((data: httpsRequest, context: any) => {
-  const request = data.data;
-  const itemName = request.itemName;
-  const itemCount = request.itemCount;
+const addItem = functions.https.onCall(
+  (data: httpsRequest, context: any): Promise<any> => {
+    const request = data.data;
+    const itemName = request.itemName;
+    const itemCount = request.itemCount;
+    // context.auth.uid
 
-  return isManager(context.auth.uid).then(() => {
-    addItemInDb(itemName, itemCount);
-  });
-});
+    return isManager("fwOxMZlkAbuP9rwI4We2").then(() => {
+      addItemInDb(itemName, itemCount);
+    });
+  }
+);
 
 export default addItem;

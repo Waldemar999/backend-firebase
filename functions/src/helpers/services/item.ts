@@ -4,28 +4,30 @@ const functions = require("firebase-functions");
 import collections from "../../constants/collections";
 import Item from "../../wrappers/Item";
 
-const addItemInDb = (itemName: string, itemCount: number) => {
-  return new Promise((resolve, reject) => {
-    return admin
+const addItemInDb = async (
+  itemName: string,
+  itemCount: number
+): Promise<any> => {
+  let result = null;
+  try {
+    result = await admin
       .firestore()
       .collection(collections.items)
       .doc()
-      .set({ ...new Item(itemName, itemCount) })
-      .then(() => {
-        resolve();
-      })
-      .catch((error: any) => {
-        reject();
-        new functions.https.HttpsError("Error adding item in database", error);
-      });
-  });
+      .set({ ...Item.createFull(itemName, itemCount) });
+    result = Promise.resolve();
+  } catch (error) {
+    result = Promise.reject();
+    new functions.https.HttpsError("Error adding item in database", error);
+  }
+  return result;
 };
 
-const changeItemInDb = (
+const changeItemInDb = async (
   itemId: string,
   itemName: string | undefined,
   itemCount: number | undefined
-) => {
+): Promise<any> => {
   const name = itemName ? itemName : null;
   const count = itemCount ? itemCount : null;
 
@@ -37,31 +39,25 @@ const changeItemInDb = (
     );
   }
 
-  const setObject = <any>{};
+  const updateObj = { ...new Item() };
   if (name) {
-    setObject.name = name;
+    updateObj.name = name;
   }
   if (count) {
-    setObject.count = count;
+    updateObj.count = count;
   }
 
-  return new Promise((resolve, reject) => {
-    return admin
+  let result = null;
+  try {
+    result = await admin
       .firestore()
       .collection(collections.items)
       .doc(itemId)
-      .update(setObject)
-      .then(() => {
-        resolve();
-      })
-      .catch((error: any) => {
-        reject();
-        new functions.https.HttpsError(
-          "Error changing item in database",
-          error
-        );
-      });
-  });
+      .update(updateObj);
+  } catch (error) {
+    new functions.https.HttpsError("Error changing item in database", error);
+  }
+  return result;
 };
 
 export { addItemInDb, changeItemInDb };

@@ -4,44 +4,45 @@ import roles from "../../constants/roles";
 
 import { getUserRoleId, getRoleId } from "../services/role";
 
-const isAdmin = (requestAuthorId: string) => {
-  return Promise.all([getUserRoleId(requestAuthorId), getRoleId(roles.admin)])
-    .then(([userRoleId, adminRoleId]) => {
-      if (userRoleId === adminRoleId) {
-        return Promise.resolve();
-      } else {
-        return Promise.reject(
-          new functions.https.HttpsError(
-            "You are not allowed to change data in the database."
-          )
-        );
-      }
-    })
-    .catch((error: any) => {
-      new functions.https.HttpsError(error);
-    });
+const isAdmin = async (requestAuthorId: string): Promise<any> => {
+  let result = null;
+  try {
+    result = await Promise.all([
+      getUserRoleId(requestAuthorId),
+      getRoleId(roles.admin)
+    ]);
+
+    let [userRoleId, adminRoleId] = result;
+    if (userRoleId !== adminRoleId) {
+      throw new functions.https.HttpsError(
+        "You are not allowed to change data in the database."
+      );
+    }
+  } catch (error) {
+    result = Promise.reject();
+  }
+  return result;
 };
 
-const isManager = (requestAuthorId: string) => {
-  return Promise.all([
-    getUserRoleId(requestAuthorId),
-    getRoleId(roles.manager),
-    getRoleId(roles.admin)
-  ])
-    .then(([userRoleId, managerRoleId, adminRoleId]) => {
-      if (userRoleId === managerRoleId || userRoleId === adminRoleId) {
-        return Promise.resolve();
-      } else {
-        return Promise.reject(
-          new functions.https.HttpsError(
-            "You are not allowed to change data in the database."
-          )
-        );
-      }
-    })
-    .catch((error: any) => {
-      new functions.https.HttpsError(error);
-    });
+const isManager = async (requestAuthorId: string): Promise<any> => {
+  let result = null;
+  try {
+    result = await Promise.all([
+      getUserRoleId(requestAuthorId),
+      getRoleId(roles.manager),
+      getRoleId(roles.admin)
+    ]);
+
+    let [userRoleId, managerRoleId, adminRoleId] = result;
+    if (userRoleId !== adminRoleId || userRoleId !== managerRoleId) {
+      throw new functions.https.HttpsError(
+        "You are not allowed to change data in the database."
+      );
+    }
+  } catch (error) {
+    result = Promise.reject();
+  }
+  return result;
 };
 
 export { isAdmin, isManager };

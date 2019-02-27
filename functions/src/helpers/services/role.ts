@@ -23,7 +23,7 @@ const getRoleId = (role: string): Promise<any> => {
     });
 };
 
-const getUserRoleId = (authorId: string) => {
+const getUserRoleId = (authorId: string): Promise<any> => {
   return admin
     .firestore()
     .collection(collections.users)
@@ -37,24 +37,22 @@ const getUserRoleId = (authorId: string) => {
     });
 };
 
-const isRoleExist = (roleId: string): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    admin
+const isRoleExist = async (roleId: string): Promise<any> => {
+  let result = null;
+  try {
+    result = await admin
       .firestore()
       .collection(collections.roles)
       .doc(roleId)
-      .get()
-      .then((documentSnapshot: any) => {
-        if (documentSnapshot.exists) {
-          resolve();
-        } else {
-          reject();
-        }
-      })
-      .catch((error: any) => {
-        new functions.https.HttpsError("Error: role is not exist", error);
-      });
-  });
+      .get();
+    if (result.exists) {
+      return Promise.resolve();
+    } else {
+      throw new functions.https.HttpsError("Error: role is not exist");
+    }
+  } catch (error) {
+    return Promise.reject(error.message);
+  }
 };
 
 export { isRoleExist, getUserRoleId, getRoleId };

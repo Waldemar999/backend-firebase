@@ -5,24 +5,18 @@ import collections from "../../constants/collections";
 
 import User from "../../wrappers/User";
 
-const writeUser = (role: string, user: string) => {
-  return new Promise((resolve, reject) => {
-    admin
+const writeUser = async (user: string, role: string): Promise<any> => {
+  let result = null;
+  try {
+    result = await admin
       .firestore()
       .collection(collections.users)
       .doc(user)
-      .set({ ...new User(role) })
-      .then(() => {
-        resolve();
-      })
-      .catch((error: any) => {
-        reject();
-        new functions.https.HttpsError(
-          "Error: add user role in database",
-          error
-        );
-      });
-  });
+      .set({ ...new User(role) });
+  } catch (error) {
+    new functions.https.HttpsError("Error: add user role in database", error);
+  }
+  return result;
 };
 
 export { writeUser };
