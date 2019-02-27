@@ -18,7 +18,7 @@ const changeItem = functions.https.onCall(
     const itemName = request.itemName;
     const itemCount = request.itemCount;
 
-    return isManager("fwOxMZlkAbuP9rwI4We2").then(() => {
+    return isManager(context.auth.uid).then(() => {
       changeItemInDb(itemId, itemName, itemCount);
     });
   }

@@ -17,7 +17,7 @@ const addItem = functions.https.onCall(
     const itemCount = request.itemCount;
     // context.auth.uid
 
-    return isManager("fwOxMZlkAbuP9rwI4We2").then(() => {
+    return isManager(context.auth.uid).then(() => {
       addItemInDb(itemName, itemCount);
     });
   }
